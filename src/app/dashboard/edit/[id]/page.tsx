@@ -128,35 +128,59 @@ export default function EditPage() {
     onChange: (v: number) => void; unit?: string;
   }) => {
     const pct = ((value - min) / (max - min)) * 100;
-    const id = `slider-${label.replace(/\s+/g, "-")}`;
+    const trackRef = useRef<HTMLDivElement>(null);
+    const dragging = useRef(false);
+
+    const calcValue = useCallback((clientX: number) => {
+      const rect = trackRef.current?.getBoundingClientRect();
+      if (!rect) return value;
+      const p = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+      const raw = min + p * (max - min);
+      const s = step || 1;
+      return Math.round(raw / s) * s;
+    }, [min, max, step, value]);
+
+    const handlePointerDown = useCallback((e: React.PointerEvent) => {
+      e.preventDefault();
+      (e.target as HTMLElement).setPointerCapture(e.pointerId);
+      dragging.current = true;
+      onChange(calcValue(e.clientX));
+    }, [calcValue, onChange]);
+
+    const handlePointerMove = useCallback((e: React.PointerEvent) => {
+      if (!dragging.current) return;
+      onChange(calcValue(e.clientX));
+    }, [calcValue, onChange]);
+
+    const handlePointerUp = useCallback(() => {
+      dragging.current = false;
+    }, []);
+
     return (
       <div className="space-y-1.5">
-        <label htmlFor={id} className="flex items-center justify-between cursor-pointer">
+        <div className="flex items-center justify-between">
           <span className="text-[11px] font-mono text-gray-400 uppercase tracking-wider">{label}</span>
           <span className="text-[11px] font-mono text-neon-cyan font-semibold drop-shadow-[0_0_4px_rgba(0,245,255,0.3)]">{value}{unit || ""}</span>
-        </label>
-        <div className="relative h-7 flex items-center">
-          <input
-            id={id}
-            type="range"
-            min={min} max={max} step={step || 1}
-            value={value}
-            onChange={(e) => onChange(Number(e.target.value))}
-            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-          />
-          <div className="absolute inset-0 flex items-center pointer-events-none px-0.5">
-            <div className="relative w-full h-2 rounded-full bg-dark-300 shadow-inner">
-              <div
-                className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-neon-cyan to-cyan-400 shadow-[0_0_6px_rgba(0,245,255,0.3)]"
-                style={{ width: `${pct}%`, minWidth: pct > 0 ? '4px' : '0' }}
-              />
-              <div
-                className="absolute top-1/2 w-[18px] h-[18px] rounded-full bg-white border-[3px] border-neon-cyan
-                  shadow-[0_0_10px_rgba(0,245,255,0.5),0_0_25px_rgba(0,245,255,0.2)]
-                  -translate-y-1/2 -translate-x-1/2"
-                style={{ left: `${pct}%` }}
-              />
-            </div>
+        </div>
+        <div className="h-7 flex items-center">
+          <div
+            ref={trackRef}
+            className="relative w-full h-2 rounded-full bg-dark-300 shadow-inner cursor-pointer select-none touch-none"
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            onPointerCancel={handlePointerUp}
+          >
+            <div
+              className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-neon-cyan to-cyan-400 shadow-[0_0_6px_rgba(0,245,255,0.3)] pointer-events-none"
+              style={{ width: `${pct}%`, minWidth: pct > 0 ? '4px' : '0' }}
+            />
+            <div
+              className="absolute top-1/2 w-[18px] h-[18px] rounded-full bg-white border-[3px] border-neon-cyan
+                shadow-[0_0_10px_rgba(0,245,255,0.5),0_0_25px_rgba(0,245,255,0.2)]
+                -translate-y-1/2 -translate-x-1/2 pointer-events-none"
+              style={{ left: `${pct}%` }}
+            />
           </div>
         </div>
       </div>
