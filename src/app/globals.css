@@ -1,0 +1,173 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&family=Rajdhani:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --neon-cyan: #00f5ff;
+  --neon-magenta: #ff00ff;
+  --neon-green: #00ff41;
+  --neon-yellow: #ffff00;
+  --neon-orange: #ff6600;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--neon-cyan) #0a0a0f;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a0f;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--neon-cyan);
+  border-radius: 3px;
+  box-shadow: 0 0 10px var(--neon-cyan);
+}
+
+body {
+  background: #0a0a0f;
+  color: #e0e0e0;
+  font-family: 'Rajdhani', sans-serif;
+}
+
+@layer utilities {
+  .text-shadow-neon {
+    text-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan), 0 0 40px var(--neon-cyan);
+  }
+
+  .text-shadow-magenta {
+    text-shadow: 0 0 10px var(--neon-magenta), 0 0 20px var(--neon-magenta);
+  }
+
+  .text-shadow-green {
+    text-shadow: 0 0 10px var(--neon-green), 0 0 20px var(--neon-green);
+  }
+
+  .box-shadow-neon {
+    box-shadow: 0 0 10px var(--neon-cyan), 0 0 20px rgba(0, 245, 255, 0.1);
+  }
+
+  .bg-grid {
+    background-image:
+      linear-gradient(rgba(0, 245, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 245, 255, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+
+  .bg-hex {
+    background-color: #0a0a0f;
+    background-image:
+      radial-gradient(circle at 20% 50%, rgba(0, 245, 255, 0.05) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(255, 0, 255, 0.05) 0%, transparent 50%),
+      radial-gradient(circle at 50% 80%, rgba(0, 255, 65, 0.05) 0%, transparent 50%);
+  }
+
+  .clip-hex {
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+  }
+
+  .scanline::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 245, 255, 0.015) 2px,
+      rgba(0, 245, 255, 0.015) 4px
+    );
+    pointer-events: none;
+  }
+}
+
+@keyframes rgbBorderAnimation {
+  0%, 100% {
+    border-color: #00f5ff;
+    box-shadow: 0 0 5px #00f5ff, 0 0 15px rgba(0, 245, 255, 0.3), inset 0 0 5px rgba(0, 245, 255, 0.1);
+  }
+  20% {
+    border-color: #ff00ff;
+    box-shadow: 0 0 5px #ff00ff, 0 0 15px rgba(255, 0, 255, 0.3), inset 0 0 5px rgba(255, 0, 255, 0.1);
+  }
+  40% {
+    border-color: #00ff41;
+    box-shadow: 0 0 5px #00ff41, 0 0 15px rgba(0, 255, 65, 0.3), inset 0 0 5px rgba(0, 255, 65, 0.1);
+  }
+  60% {
+    border-color: #ffff00;
+    box-shadow: 0 0 5px #ffff00, 0 0 15px rgba(255, 255, 0, 0.3), inset 0 0 5px rgba(255, 255, 0, 0.1);
+  }
+  80% {
+    border-color: #ff6600;
+    box-shadow: 0 0 5px #ff6600, 0 0 15px rgba(255, 102, 0, 0.3), inset 0 0 5px rgba(255, 102, 0, 0.1);
+  }
+}
+
+.card-rgb-selected {
+  border: 2px solid #00f5ff;
+  animation: rgbBorderAnimation 4s linear infinite;
+}
+
+@keyframes glitch {
+  0% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(-2px, -2px); }
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+  100% { transform: translate(0); }
+}
+
+.glitch-text:hover {
+  animation: glitch 0.3s ease-in-out;
+}
+
+@keyframes neonPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.neon-pulse {
+  animation: neonPulse 2s ease-in-out infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.rgb-gradient {
+  background: linear-gradient(90deg, #00f5ff, #ff00ff, #00ff41, #ffff00, #ff6600, #00f5ff);
+  background-size: 300% 100%;
+  animation: gradientShift 4s ease infinite;
+}
+
+.rgb-text {
+  background: linear-gradient(90deg, #00f5ff, #ff00ff, #00ff41, #ffff00, #ff6600);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientShift 4s ease infinite;
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
