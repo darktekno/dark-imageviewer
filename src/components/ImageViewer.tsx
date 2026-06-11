@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useCallback, useState, useRef } from "react";
+import { useRouter } from "next/navigation";
 
 interface ViewerImage {
   id: string;
@@ -56,6 +57,7 @@ export default function ImageViewer({
   const [transitioning, setTransitioning] = useState(false);
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const [naturalSize, setNaturalSize] = useState({ width: 0, height: 0 });
+  const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
   const imageContainerRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
@@ -489,6 +491,13 @@ export default function ImageViewer({
               hover:border-neon-cyan/50 hover:text-neon-cyan transition-all"
           >
             ROTATE
+          </button>
+          <button
+            onClick={() => router.push(`/dashboard/edit/${current.id}?filename=${encodeURIComponent(current.filename)}`)}
+            className="px-3 py-1 text-xs font-gaming border border-neon-green/50 text-neon-green rounded
+              hover:bg-neon-green/10 hover:border-neon-green transition-all"
+          >
+            EDIT
           </button>
           <a
             href={src}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface ImageCardProps {
   id: string;
@@ -13,6 +14,7 @@ interface ImageCardProps {
 
 export default function ImageCard({ id, filename, storedPath, selected, onSelect, onView }: ImageCardProps) {
   const [loaded, setLoaded] = useState(false);
+  const router = useRouter();
   const imgUrl = `/api/images/${id}`;
 
   return (
@@ -58,6 +60,20 @@ export default function ImageCard({ id, filename, storedPath, selected, onSelect
         <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+        </svg>
+      </button>
+
+      <button
+        onClick={(e) => { e.stopPropagation(); router.push(`/dashboard/edit/${id}?filename=${encodeURIComponent(filename)}`); }}
+        className="absolute bottom-2 right-2 w-7 h-7 flex items-center justify-center rounded-full
+          bg-dark/80 border border-white/20 text-white/70 opacity-0 group-hover:opacity-100
+          hover:bg-neon-green/20 hover:border-neon-green hover:text-neon-green
+          transition-all duration-200"
+        title="Edit image"
+      >
+        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
         </svg>
       </button>
 
