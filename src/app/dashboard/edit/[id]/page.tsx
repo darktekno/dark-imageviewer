@@ -130,6 +130,8 @@ export default function EditPage() {
     const pct = ((value - min) / (max - min)) * 100;
     const trackRef = useRef<HTMLDivElement>(null);
     const dragging = useRef(false);
+    const onChangeRef = useRef(onChange);
+    onChangeRef.current = onChange;
 
     const calcValue = useCallback((clientX: number) => {
       const rect = trackRef.current?.getBoundingClientRect();
@@ -140,21 +142,41 @@ export default function EditPage() {
       return Math.round(raw / s) * s;
     }, [min, max, step, value]);
 
-    const handlePointerDown = useCallback((e: React.PointerEvent) => {
-      e.preventDefault();
-      (e.target as HTMLElement).setPointerCapture(e.pointerId);
-      dragging.current = true;
-      onChange(calcValue(e.clientX));
-    }, [calcValue, onChange]);
+    useEffect(() => {
+      const el = trackRef.current;
+      if (!el) return;
+      const onDown = (e: MouseEvent | TouchEvent) => {
+        e.preventDefault();
+        dragging.current = true;
+        const cx = 'touches' in e ? e.touches[0].clientX : (e as MouseEvent).clientX;
+        onChangeRef.current(calcValue(cx));
+      };
+      el.addEventListener('mousedown', onDown);
+      el.addEventListener('touchstart', onDown, { passive: false });
+      return () => {
+        el.removeEventListener('mousedown', onDown);
+        el.removeEventListener('touchstart', onDown);
+      };
+    }, [calcValue]);
 
-    const handlePointerMove = useCallback((e: React.PointerEvent) => {
-      if (!dragging.current) return;
-      onChange(calcValue(e.clientX));
-    }, [calcValue, onChange]);
-
-    const handlePointerUp = useCallback(() => {
-      dragging.current = false;
-    }, []);
+    useEffect(() => {
+      const onMove = (e: MouseEvent | TouchEvent) => {
+        if (!dragging.current) return;
+        const cx = 'touches' in e ? e.touches[0].clientX : (e as MouseEvent).clientX;
+        onChangeRef.current(calcValue(cx));
+      };
+      const onUp = () => { dragging.current = false; };
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+      document.addEventListener('touchmove', onMove, { passive: true });
+      document.addEventListener('touchend', onUp);
+      return () => {
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+        document.removeEventListener('touchmove', onMove);
+        document.removeEventListener('touchend', onUp);
+      };
+    }, [calcValue]);
 
     return (
       <div className="space-y-1.5">
@@ -165,11 +187,7 @@ export default function EditPage() {
         <div className="h-7 flex items-center">
           <div
             ref={trackRef}
-            className="relative w-full h-2 rounded-full bg-dark-300 shadow-inner cursor-pointer select-none touch-none"
-            onPointerDown={handlePointerDown}
-            onPointerMove={handlePointerMove}
-            onPointerUp={handlePointerUp}
-            onPointerCancel={handlePointerUp}
+            className="relative w-full h-2 rounded-full bg-dark-300 shadow-inner cursor-ew-resize select-none touch-none"
           >
             <div
               className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-neon-cyan to-cyan-400 shadow-[0_0_6px_rgba(0,245,255,0.3)] pointer-events-none"
