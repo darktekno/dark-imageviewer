@@ -128,40 +128,36 @@ export default function EditPage() {
     onChange: (v: number) => void; unit?: string;
   }) => {
     const pct = ((value - min) / (max - min)) * 100;
+    const id = `slider-${label.replace(/\s+/g, "-")}`;
     return (
       <div className="space-y-1.5">
-        <div className="flex items-center justify-between">
-          <span className="text-[10px] font-mono text-gray-500 uppercase tracking-wider">{label}</span>
-          <span className="text-[10px] font-mono text-neon-cyan/80 font-medium">{value}{unit || ""}</span>
-        </div>
-        <div className="h-6 flex items-center">
+        <label htmlFor={id} className="flex items-center justify-between cursor-pointer">
+          <span className="text-[11px] font-mono text-gray-400 uppercase tracking-wider">{label}</span>
+          <span className="text-[11px] font-mono text-neon-cyan font-semibold drop-shadow-[0_0_4px_rgba(0,245,255,0.3)]">{value}{unit || ""}</span>
+        </label>
+        <div className="relative h-7 flex items-center">
           <input
+            id={id}
             type="range"
             min={min} max={max} step={step || 1}
             value={value}
             onChange={(e) => onChange(Number(e.target.value))}
-            className="w-full h-1.5 appearance-none bg-transparent outline-none cursor-pointer rounded-full
-              [&::-webkit-slider-runnable-track]:h-1.5 [&::-webkit-slider-runnable-track]:rounded-full
-              [&::-webkit-slider-runnable-track]:bg-dark-200
-              [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4
-              [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-dark [&::-webkit-slider-thumb]:border-2
-              [&::-webkit-slider-thumb]:border-neon-cyan [&::-webkit-slider-thumb]:cursor-ew-resize
-              [&::-webkit-slider-thumb]:shadow-[0_0_8px_rgba(0,245,255,0.4),0_0_20px_rgba(0,245,255,0.15)]
-              [&::-webkit-slider-thumb]:hover:shadow-[0_0_12px_rgba(0,245,255,0.6),0_0_30px_rgba(0,245,255,0.25)]
-              [&::-webkit-slider-thumb]:transition-shadow [&::-webkit-slider-thumb]:duration-200
-              [&::-webkit-slider-thumb]:-mt-[5px]
-              [&::-moz-range-track]:h-1.5 [&::-moz-range-track]:rounded-full [&::-moz-range-track]:bg-dark-200
-              [&::-moz-range-progress]:h-1.5 [&::-moz-range-progress]:rounded-full [&::-moz-range-progress]:bg-neon-cyan
-              [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4
-              [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-dark [&::-moz-range-thumb]:border-2
-              [&::-moz-range-thumb]:border-neon-cyan [&::-moz-range-thumb]:cursor-ew-resize
-              [&::-moz-range-thumb]:shadow-[0_0_8px_rgba(0,245,255,0.4)]"
-            style={{
-              background: `linear-gradient(to right, #00f5ffcc ${pct}%, transparent ${pct}%)`,
-              backgroundSize: '100% 100%',
-              backgroundRepeat: 'no-repeat',
-            }}
+            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
           />
+          <div className="absolute inset-0 flex items-center pointer-events-none px-0.5">
+            <div className="relative w-full h-2 rounded-full bg-dark-300 shadow-inner">
+              <div
+                className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-neon-cyan to-cyan-400 shadow-[0_0_6px_rgba(0,245,255,0.3)]"
+                style={{ width: `${pct}%`, minWidth: pct > 0 ? '4px' : '0' }}
+              />
+              <div
+                className="absolute top-1/2 w-[18px] h-[18px] rounded-full bg-white border-[3px] border-neon-cyan
+                  shadow-[0_0_10px_rgba(0,245,255,0.5),0_0_25px_rgba(0,245,255,0.2)]
+                  -translate-y-1/2 -translate-x-1/2"
+                style={{ left: `${pct}%` }}
+              />
+            </div>
+          </div>
         </div>
       </div>
     );
