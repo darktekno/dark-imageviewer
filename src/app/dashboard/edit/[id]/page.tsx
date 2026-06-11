@@ -134,30 +134,33 @@ export default function EditPage() {
           <span className="text-[10px] font-mono text-gray-500 uppercase tracking-wider">{label}</span>
           <span className="text-[10px] font-mono text-neon-cyan/80 font-medium">{value}{unit || ""}</span>
         </div>
-        <div className="relative h-6 flex items-center">
+        <div className="h-6 flex items-center">
           <input
             type="range"
             min={min} max={max} step={step || 1}
             value={value}
             onChange={(e) => onChange(Number(e.target.value))}
-            className="absolute inset-0 w-full h-full appearance-none bg-transparent outline-none z-10 cursor-pointer
+            className="w-full h-1.5 appearance-none bg-transparent outline-none cursor-pointer rounded-full
+              [&::-webkit-slider-runnable-track]:h-1.5 [&::-webkit-slider-runnable-track]:rounded-full
+              [&::-webkit-slider-runnable-track]:bg-dark-200
               [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4
               [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-dark [&::-webkit-slider-thumb]:border-2
-              [&::-webkit-slider-thumb]:border-neon-cyan [&::-webkit-slider-thumb]:cursor-pointer
+              [&::-webkit-slider-thumb]:border-neon-cyan [&::-webkit-slider-thumb]:cursor-ew-resize
               [&::-webkit-slider-thumb]:shadow-[0_0_8px_rgba(0,245,255,0.4),0_0_20px_rgba(0,245,255,0.15)]
               [&::-webkit-slider-thumb]:hover:shadow-[0_0_12px_rgba(0,245,255,0.6),0_0_30px_rgba(0,245,255,0.25)]
               [&::-webkit-slider-thumb]:transition-shadow [&::-webkit-slider-thumb]:duration-200
+              [&::-webkit-slider-thumb]:-mt-[5px]
+              [&::-moz-range-track]:h-1.5 [&::-moz-range-track]:rounded-full [&::-moz-range-track]:bg-dark-200
+              [&::-moz-range-progress]:h-1.5 [&::-moz-range-progress]:rounded-full [&::-moz-range-progress]:bg-neon-cyan
               [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4
               [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-dark [&::-moz-range-thumb]:border-2
-              [&::-moz-range-thumb]:border-neon-cyan [&::-moz-range-thumb]:cursor-pointer
-              [&::-moz-range-thumb]:shadow-[0_0_8px_rgba(0,245,255,0.4)]
-              [&::-moz-range-track]:h-1.5 [&::-moz-range-track]:rounded-full [&::-moz-range-track]:bg-dark-200
-              [&::-moz-range-progress]:h-1.5 [&::-moz-range-progress]:rounded-full [&::-moz-range-progress]:bg-neon-cyan/60"
-          />
-          <div className="absolute left-0 h-1.5 rounded-full bg-dark-200 w-full pointer-events-none" />
-          <div
-            className="absolute left-0 h-1.5 rounded-full bg-gradient-to-r from-neon-cyan/80 to-neon-cyan pointer-events-none transition-[width] duration-75"
-            style={{ width: `${pct}%` }}
+              [&::-moz-range-thumb]:border-neon-cyan [&::-moz-range-thumb]:cursor-ew-resize
+              [&::-moz-range-thumb]:shadow-[0_0_8px_rgba(0,245,255,0.4)]"
+            style={{
+              background: `linear-gradient(to right, #00f5ffcc ${pct}%, transparent ${pct}%)`,
+              backgroundSize: '100% 100%',
+              backgroundRepeat: 'no-repeat',
+            }}
           />
         </div>
       </div>
